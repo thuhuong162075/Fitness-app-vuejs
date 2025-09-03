@@ -1,11 +1,38 @@
 <script setup>
-    import { workoutProgram } from '../../utils';
+    import Portal from '../Portal.vue';
+    import { exerciseDescriptions, workoutProgram } from '../../utils';
+    import { computed, ref } from 'vue';
     const selectedWorkout = 4;
     const {workout, warmup} = workoutProgram[selectedWorkout];
-    console.log(workout, warmup);
+    // let selectedExercise = null;  this wont work because we need stateful variables so that the ui knows it needs
+    // to rerender to reflect any changes in the js
+    let selectedExercise = ref(null);
+    const exerciseDescription = computed(() => {
+       return exerciseDescriptions[selectedExercise.value]
+    });
+
+    const showRearDeltModal = (name) => {
+        selectedExercise.value = name;
+    }
+
+    const handleCloseModel = () => {
+        selectedExercise.value = null;
+    }
 </script>
 
 <template>
+    <Portal :handleCloseModel="handleCloseModel" v-if="selectedExercise">
+        <div class="exercise-description">
+            <h3>{{ selectedExercise }}</h3>
+            <div>
+                <small>Description</small>
+                <p>{{ exerciseDescription }}</p>
+            </div>
+            <button @click="handleCloseModel">
+                Close <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </Portal>
     <section id="workout-card">
         <div class="plan-card card">
             <div class="plan-card-header">
@@ -22,7 +49,9 @@
             <div class="workout-grid-row" v-for="(w, wIdx) in warmup" :key="wIdx">
                 <div class="grid-name">
                     <p>{{ w.name }}</p>
-                    <button><i class="fa-regular fa-circle-question"></i></button>
+                    <button @click="() => showRearDeltModal(w.name)">
+                        <i class="fa-regular fa-circle-question"></i>
+                    </button>
                 </div>
                 <p>{{ w.sets }}</p>
                 <p>{{ w.reps }}</p>
@@ -36,7 +65,9 @@
             <div class="workout-grid-row" v-for="(w, wIdx) in workout" :key="wIdx">
                 <div class="grid-name">
                     <p>{{ w.name }}</p>
-                    <button><i class="fa-regular fa-circle-question"></i></button>
+                    <button @click="() => showRearDeltModal(w.name)">
+                        <i class="fa-regular fa-circle-question"></i>
+                    </button>
                 </div>
                 <p>{{ w.sets }}</p>
                 <p>{{ w.reps }}</p>
@@ -123,5 +154,20 @@
 
     .workout-btns button i {
         padding-left: 12px;
+    }
+
+     .exercise-description {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .exercise-description h3 {
+        text-transform: capitalize;
+    }
+
+    .exercise-description button i {
+        padding-left: 0.5rem;
     }
 </style>
