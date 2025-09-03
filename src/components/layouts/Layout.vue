@@ -13,6 +13,7 @@
         <a href="https://github.com/thuhuong162075" target="_blank">
             <img alt="pfp" src="https://avatars.githubusercontent.com/u/43499837?v=4" />
             <p>Hanna</p>
+            <i class="fa-brands fa-github"></i>
         </a>
     </footer>
 </template>
