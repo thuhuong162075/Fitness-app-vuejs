@@ -1,11 +1,23 @@
 <script setup>
     import { workoutProgram } from '../utils';
+
+const props = defineProps({
+    handleSelectWorkout: Function,
+    firstInCompleteWorkoutIndex: Number,
+    handleResetPlan: Function
+})
     const workoutTypes = ['Push', 'Pull', 'Legs'];
 </script>
 
 <template>
     <section id="grid">
-        <button :key="workoutIdx" v-for="(workout, workoutIdx) in Object.keys(workoutProgram)" class="card-button plan-card">
+        <button 
+            :disabled="workoutIdx > 0 && workoutIdx > firstInCompleteWorkoutIndex"
+            @click="() => handleSelectWorkout(workoutIdx)" 
+            :key="workoutIdx" 
+            v-for="(workout, workoutIdx) in Object.keys(workoutProgram)" 
+            class="card-button plan-card"
+        >
             <div>
                 <p>Day {{ workoutIdx < 9 ? '0' + (workoutIdx +1) : workoutIdx + 1 }}</p>
                 <i class="fa-solid fa-dumbbell" v-if="workoutIdx % 3 == 0"></i>
@@ -14,6 +26,7 @@
             </div>
             <h3>{{ workoutTypes[workoutIdx % 3] }}</h3>
         </button>
+        <button :disabled="firstInCompleteWorkoutIndex != -1" @click="handleResetPlan" class="card-button plan-card-reset">Reset <i class="fa-solid fa-rotate-right"></i></button>
     </section>   
 </template>
 
@@ -28,9 +41,22 @@
         width: 100%;
     }
 
+    #grid button:disabled {
+        box-shadow: none;
+        cursor: not-allowed;
+    }
+
     .plan-card {
         display: flex;
         flex-direction: column;
+    }
+
+    .plan-card-reset {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
     }
 
     .plan-card div {

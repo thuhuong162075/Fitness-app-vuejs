@@ -1,9 +1,14 @@
 <script setup>
+defineProps({
+    returnWelcomePage: Function
+})
 </script>
 
 <template>
     <header>
-        <h1 class="text-gradient">FITNESS APP</h1>
+        <div role="button" tabindex="0" @click="returnWelcomePage" class="page-title">
+            <h1 class="text-gradient">FITNESS APP</h1>
+        </div>
     </header>
     <main>
         <slot />
@@ -19,6 +24,12 @@
 </template>
 
 <style scoped>
+
+    .page-title {
+        cursor: pointer;
+        width: fit-content;
+    }
+
     header, footer, main {
         padding: 1rem;
         width: 100%;
